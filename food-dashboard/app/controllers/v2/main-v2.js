@@ -17,6 +17,8 @@ let fetchFoodList = () =>{
     .catch((error) => {
         console.log(error);
     });}
+
+
 function turnOffLoading (){
     document.querySelector(`#spinner`).style.display = 'none';
 }
@@ -32,6 +34,7 @@ fetchFoodList();
 
 // DeleteFood 
 let deleteFood = (id) =>{
+  turnOnLoading();
   console.log("delete", id);
   https.delete(`/food/${id}`)
 .then ((response) => {
@@ -48,7 +51,7 @@ window.deleteFood = deleteFood;
 
 window.addFood = () => {
     let food = layThongtinTuForm();
-    let {foodID, //foodID:foodID
+    let {foodID, 
     spTenMon,
     loai,
     ten,
@@ -57,10 +60,12 @@ window.addFood = () => {
     tinhTrang,
     hinhAnh,
     moTa} = food;
+
     // checkValidate 
-// export let checkDuplicate =(value, idErr, foodList, message, key) => {
-    var isValid = isValid & checkEmty(foodID,"invalidID" ) & checkDuplicate(foodID, "invalidID", foodArr, "This id already exists", "foodID");
-    if (isValid === 0) {
+    var isValid = checkEmty(foodID,"invalidID" ) && checkDuplicate(foodID, "invalidID", foodArr, "This id already exists", 'ma');
+    
+    if (!isValid) {
+    // isValid = false dừng hàm addFood
         return;
     }
     https
@@ -78,12 +83,13 @@ window.addFood = () => {
 
 // EDIT PRODUCT = SELECT PRODUCT + UPDATE PRODUCT
 window.editFood = (id) => {
+    $("#exampleModal").modal("show");
+    turnOnLoading();
     selectedID = id;
     https
     .get(`/food/${id}`)
     .then((response) => {
-        turnOffLoading();
-        $("#exampleModal").modal("show");
+     turnOffLoading()
         showData(response.data);
         console.log("🚀 ~ file: main-v2.js:68 ~ .then ~ response.data:", response.data)
     })
@@ -105,4 +111,9 @@ window.updateFood = () => {
     .catch((error) => {
         console.log(error);
     })
+}
+
+// filter mảng -> render ra mảng mới
+window.filterField = (typeFood) => {
+
 }
