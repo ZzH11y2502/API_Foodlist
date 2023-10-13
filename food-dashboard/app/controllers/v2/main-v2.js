@@ -1,12 +1,16 @@
 import { https } from "../../service/service.js";
 import { renderFoodlist, showData } from "./controller-v2.js";
 import { getData, layThongtinTuForm } from "../v1/controller-v1.js";
+import {checkDuplicate, checkEmty} from "./validate-v2.js";
 
 var selectedID = null;
+var foodArr = null;
+
 let fetchFoodList = () =>{
     https.get("/food")
     .then((response) => {
         renderFoodlist(response.data.reverse());
+        foodArr = response.data;
         turnOffLoading();
     })
     
@@ -44,7 +48,21 @@ window.deleteFood = deleteFood;
 
 window.addFood = () => {
     let food = layThongtinTuForm();
-    console.log("🚀 ~ file: main-v2.js:40 ~ data:", food)
+    let {foodID, //foodID:foodID
+    spTenMon,
+    loai,
+    ten,
+    gia,
+    khuyenMai,
+    tinhTrang,
+    hinhAnh,
+    moTa} = food;
+    // checkValidate 
+// export let checkDuplicate =(value, idErr, foodList, message, key) => {
+    var isValid = isValid & checkEmty(foodID,"invalidID" ) & checkDuplicate(foodID, "invalidID", foodArr, "This id already exists", "foodID");
+    if (isValid === 0) {
+        return;
+    }
     https
     .post("/food",food)
     .then((response) => {
